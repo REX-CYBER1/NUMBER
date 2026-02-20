@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhoneFinder - Business Lead Generator</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #111827;
+            --text-sub: #6b7280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        nav {
+            background: var(--card-bg);
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(135deg, #4f46e5 0%, #818cf8 100%);
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Search Box */
+        .search-container {
+            max-width: 800px;
+            margin: -2rem auto 2rem;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            width: 90%;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        button.search-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button.search-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        /* Results Area */
+        .results-container {
+            max-width: 1000px;
+            margin: 0 auto 3rem;
+            padding: 0 1rem;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Result Card */
+        .card {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: #e5e7eb;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.5rem;
+        }
+
+        .business-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .verified-badge {
+            background: #d1fae5;
+            color: #065f46;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+
+        .category {
+            color: var(--primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-sub);
+            font-size: 0.95rem;
+        }
+
+        .phone-number {
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            background: #f3f4f6;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            display: block;
+            margin-top: 0.5rem;
+            text-align: center;
+            border: 1px dashed #d1d5db;
+            cursor: pointer;
+        }
+
+        .phone-number:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+        }
+
+        /* Utilities */
+        .hidden { display: none; }
+        
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-results {
+            text-align: center;
+            color: var(--text-sub);
+            grid-column: 1 / -1;
+            padding: 2rem;
+        }
+
+        /* Toast Notification */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 17px;
+        }
+
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <span>📞</span> PhoneFinder
+        </div>
+        <div>
+            <button style="background: transparent; border: 1px solid #d1d5db; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer;">Login</button>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1>Find Business Phone Numbers</h1>
+        <p>Instantly generate leads for your sales team.</p>
+    </div>
+
+    <div class="search-container">
+        <form id="searchForm" class="input-group">
+            <input type="text" id="businessType" placeholder="Business Type (e.g. Plumber, Pizza, Hair Salon)" required>
+            <input type="text" id="location" placeholder="Location (e.g. New York, NY)" required>
+            <button type="submit" class="search-btn" id="searchBtn">Find Numbers</button>
+        </form>
+    </div>
+
+    <div class="results-container" id="resultsArea">
+        <!-- Results will appear here -->
+        <div class="no-results">Enter a business type and location to start searching.</div>
+    </div>
+
+    <!-- Loader (Hidden by default) -->
+    <div id="loader" class="loader hidden"></div>
+
+    <!-- Toast Notification -->
+    <div id="toast">Phone number copied!</div>
+
+    <script>
+        // --- MOCK DATA GENERATOR ---
+        // Since we don't have a paid API, we simulate a database.
+        // In a real app, you would fetch data from Google Places API or similar.
+        
+        const mockBusinesses = [
+            { name: "Joe's Plumbing", type: "Plumber", address: "123 Maple Ave" },
+            { name: "Luigi's Pizzeria", type: "Restaurant", address: "456 Oak St" },
+            { name: "Style Studio", type: "Hair Salon", address: "789 Pine Ln" },
+            { name: "TechFix Solutions", type: "IT Support", address: "101 Binary Rd" },
+            { name: "Green Leaf Landscaping", type: "Landscaper", address: "202 Garden Way" },
+            { name: "Downtown Dental", type: "Dentist", address: "303 Ivory Blvd" },
+            { name: "Speedy Auto Repair", type: "Mechanic", address: "404 Tire Cir" },
+            { name: "The Coffee Spot", type: "Cafe", address: "505 Bean St" }
+        ];
+
+        function generateRandomPhone() {
+            // Generates a random US-style phone number
+            const areaCode = Math.floor(Math.random() * 800) + 200;
+            const prefix = Math.floor(Math.random() * 900) + 100;
+            const lineNum = Math.floor(Math.random() * 9000) + 1000;
+            return `(${areaCode}) ${prefix}-${lineNum}`;
+        }
+
+        // --- APP LOGIC ---
+
+        const searchForm = document.getElementById('searchForm');
+        const resultsArea = document.getElementById('resultsArea');
+        const loader = document.getElementById('loader');
+        const searchBtn = document.getElementById('searchBtn');
+
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const type = document.getElementById('businessType').value;
+            const loc = document.getElementById('location').value;
+
+            if(!type || !loc) return;
+
+            // UI Updates
+            resultsArea.innerHTML = ''; // Clear previous
+            loader.classList.remove('hidden');
+            searchBtn.disabled = true;
+            searchBtn.textContent = 'Searching...';
+
+            // SIMULATE NETWORK DELAY (1.5 seconds)
+            setTimeout(() => {
+                // Generate 3 to 6 random results
+                const resultCount = Math.floor(Math.random() * 4) + 3;
+                
+                for(let i=0; i<resultCount; i++) {
+                    // Pick a random template and modify it
+                    const template = mockBusinesses[Math.floor(Math.random() * mockBusinesses.length)];
+                    const phone = generateRandomPhone();
+                    
+                    // Create Card HTML
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <div class="business-name">${template.name} ${i+1}</div>
+                            <span class="verified-badge">Verified</span>
+                        </div>
+                        <div class="category">${type}</div>
+                        <div class="info-row">
+                            <span>📍</span> ${template.address}, ${loc}
+                        </div>
+                        <div class="info-row">
+                            <span>📞</span> Main Office
+                        </div>
+                        <div class="phone-number" onclick="copyToClipboard('${phone}')">
+                            ${phone} <span style="font-size:0.8em; color:#9ca3af; margin-left:5px;">(Click to
